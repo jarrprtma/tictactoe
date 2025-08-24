@@ -3,21 +3,23 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TicTacToe</title>
+  <title>TicTacToe+</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="container">
-    <h1>Tic Tac Toe</h1>
+    <h1 class="title">🎮 Tic Tac Toe+</h1>
     
     <div class="controls">
-      <div class="selects">
-        <label for="symbol">Pilih Simbol Woi:</label>
-        <select id="symbol">
-          <option value="X">X</option>
-          <option value="O">O</option>
+      <div class="row">
+        <label for="mode">Mode:</label>
+        <select id="mode">
+          <option value="bot">Player vs Bot</option>
+          <option value="pvp">Player vs Player</option>
         </select>
+      </div>
 
+      <div class="row">
         <label for="difficulty">Kesulitan:</label>
         <select id="difficulty">
           <option value="easy">Mudah</option>
@@ -25,19 +27,34 @@
           <option value="hard">Sulit</option>
         </select>
       </div>
-      <button id="reset">Reset</button>
+
+      <div class="row">
+        <label for="theme">Tema:</label>
+        <select id="theme">
+          <option value="light">Light</option>
+          <option value="dark">Dark</option>
+          <option value="neon">Neon</option>
+        </select>
+      </div>
     </div>
 
     <div id="board" class="board"></div>
 
-    <p id="status">Pilih simbol & mulai permainan!</p>
+    <p id="status">Pilih mode dan mulai permainan!</p>
 
     <div class="scoreboard">
-      <div>👤 Kamu: <span id="playerScore">0</span></div>
-      <div>🤖 Bot: <span id="botScore">0</span></div>
+      <div>👤 Player 1: <span id="player1Score">0</span></div>
+      <div>🤖 Player 2/Bot: <span id="player2Score">0</span></div>
       <div>⚖️ Seri: <span id="drawScore">0</span></div>
     </div>
+
+    <div class="buttons">
+      <button id="newRound">New Round</button>
+      <button id="reset">Reset All</button>
+    </div>
   </div>
+
+  <canvas id="confetti"></canvas>
   
   <script src="script.js"></script>
 </body>
