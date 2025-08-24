@@ -28,30 +28,32 @@ body {
   align-items: center;
   min-height: 100vh;
   margin: 0;
+  padding: 10px;
   transition: background 0.3s, color 0.3s;
 }
 
 .container {
   background: var(--card);
-  padding: 25px 35px;
-  border-radius: 20px;
+  padding: 20px;
+  border-radius: 16px;
   box-shadow: 0 6px 25px rgba(0,0,0,0.15);
   text-align: center;
-  width: 360px;
+  width: 100%;
+  max-width: 380px;
   transition: background 0.3s;
 }
 
 .title {
-  margin-bottom: 20px;
-  font-size: 1.8rem;
+  margin-bottom: 15px;
+  font-size: 1.6rem;
   color: var(--accent);
 }
 
 .controls {
-  margin-bottom: 20px;
+  margin-bottom: 15px;
 }
 .controls .row {
-  margin: 8px 0;
+  margin: 6px 0;
 }
 
 select, button {
@@ -69,26 +71,26 @@ button {
   border: none;
 }
 button:hover {
-  opacity: 0.8;
+  opacity: 0.85;
 }
 
 .board {
   display: grid;
-  grid-template-columns: repeat(3, 100px);
-  gap: 10px;
-  justify-content: center;
-  margin: 20px auto;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin: 15px auto;
+  width: 100%;
+  max-width: 320px;
 }
 
 .cell {
-  width: 100px;
-  height: 100px;
+  aspect-ratio: 1 / 1;
   background: #f9f9f9;
   border-radius: 12px;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 2.5rem;
+  font-size: clamp(1.8rem, 6vw, 2.5rem);
   font-weight: bold;
   cursor: pointer;
   transition: transform 0.2s, background 0.3s;
@@ -97,7 +99,7 @@ body.dark .cell { background: #333; }
 body.neon .cell { background: #111; }
 
 .cell:hover {
-  transform: scale(1.1);
+  transform: scale(1.08);
   background: var(--accent);
   color: #fff;
 }
@@ -108,18 +110,19 @@ body.neon .cell { background: #111; }
 
 @keyframes glow {
   from { box-shadow: 0 0 5px var(--accent); }
-  to { box-shadow: 0 0 20px var(--accent); }
+  to { box-shadow: 0 0 18px var(--accent); }
 }
 
 .scoreboard {
-  margin-top: 15px;
+  margin-top: 12px;
   display: flex;
   justify-content: space-between;
   font-weight: bold;
+  font-size: 0.9rem;
 }
 
 .buttons {
-  margin-top: 20px;
+  margin-top: 15px;
   display: flex;
   justify-content: space-around;
 }
@@ -127,4 +130,15 @@ body.neon .cell { background: #111; }
 #status {
   margin-top: 10px;
   font-weight: 600;
+}
+
+/* Confetti fix */
+#confetti {
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 999;
+  width: 100vw;
+  height: 100vh;
 }
