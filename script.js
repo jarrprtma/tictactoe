@@ -1,75 +1,166 @@
 const boardElement = document.getElementById("board");
 const statusElement = document.getElementById("status");
-const resetButton = document.getElementById("reset");
-const newRoundButton = document.getElementById("newRound");
-
+const player1ScoreEl = document.getElementById("player1Score");
+const player2ScoreEl = document.getElementById("player2Score");
+const drawScoreEl = document.getElementById("drawScore");
 const modeSelect = document.getElementById("mode");
 const difficultySelect = document.getElementById("difficulty");
 const themeSelect = document.getElementById("theme");
 
-const player1ScoreEl = document.getElementById("player1Score");
-const player2ScoreEl = document.getElementById("player2Score");
-const drawScoreEl = document.getElementById("drawScore");
-
-let board = Array(9).fill("");
-let currentPlayer = "X";
-let gameOver = false;
-let mode = "bot";
-
-let scores = { p1: 0, p2: 0, draw: 0 };
-
-// 🎵 efek suara
-const clickSound = new Audio("https://assets.mixkit.co/sfx/preview/mixkit-select-click-1109.mp3");
-const winSound = new Audio("https://assets.mixkit.co/sfx/preview/mixkit-achievement-bell-600.mp3");
-
-// 🎉 confetti canvas
+const newRoundBtn = document.getElementById("newRound");
+const resetBtn = document.getElementById("reset");
 const confettiCanvas = document.getElementById("confetti");
 const ctx = confettiCanvas.getContext("2d");
+
 confettiCanvas.width = window.innerWidth;
 confettiCanvas.height = window.innerHeight;
-let confettiParticles = [];
 
-// Buat papan
-function createBoard() {
+window.addEventListener("resize", () => {
+  confettiCanvas.width = window.innerWidth;
+  confettiCanvas.height = window.innerHeight;
+});
+
+// === Game Variables ===
+let board = Array(9).fill("");
+let currentPlayer = "X";
+let isGameOver = false;
+let player1Score = 0, player2Score = 0, drawScore = 0;
+
+// === Render Board ===
+function renderBoard() {
   boardElement.innerHTML = "";
-  board.forEach((_, i) => {
-    const cell = document.createElement("div");
-    cell.classList.add("cell");
-    cell.dataset.index = i;
-    cell.addEventListener("click", handleCellClick);
-    boardElement.appendChild(cell);
+  board.forEach((cell, idx) => {
+    const div = document.createElement("div");
+    div.classList.add("cell");
+    div.textContent = cell;
+    div.addEventListener("click", () => makeMove(idx));
+    boardElement.appendChild(div);
   });
 }
+renderBoard();
 
-// Klik player
-function handleCellClick(e) {
-  const idx = e.target.dataset.index;
-  if (board[idx] === "" && !gameOver) {
-    board[idx] = currentPlayer;
-    clickSound.play();
-    updateBoard();
+// === Game Logic ===
+function makeMove(index) {
+  if (board[index] || isGameOver) return;
+  board[index] = currentPlayer;
+  renderBoard();
+  checkWinner();
 
-    if (checkWinner(board, currentPlayer)) {
-      endGame(`${getPlayerName(currentPlayer)} menang!`, currentPlayer);
-      return;
-    }
-    if (isDraw()) {
-      endGame("⚖️ Seri!", "draw");
-      return;
-    }
-
-    // Ganti giliran
+  if (!isGameOver) {
     currentPlayer = currentPlayer === "X" ? "O" : "X";
-    statusElement.textContent = "Giliran " + getPlayerName(currentPlayer);
+    statusElement.textContent = `Giliran: ${currentPlayer}`;
+  }
 
-    // Jika mode bot & giliran bot
-    if (mode === "bot" && currentPlayer === "O") {
-      setTimeout(botMove, 500);
-    }
+  // Bot Move
+  if (!isGameOver && modeSelect.value === "bot" && currentPlayer === "O") {
+    setTimeout(botMove, 500);
   }
 }
 
-// Bot gerak
+function botMove() {
+  let available = board.map((v,i)=> v==="" ? i : null).filter(v=>v!==null);
+  let move;
+  if (difficultySelect.value === "easy") {
+    move = available[Math.floor(Math.random() * available.length)];
+  } else if (difficultySelect.value === "medium") {
+    move = available.length > 0 ? available[0] : null;
+  } else {
+    move = bestMove();
+  }
+  if (move !== null) makeMove(move);
+}
+
+function bestMove() {
+  for (let i=0;i<board.length;i++){
+    if (!board[i]) return i; // placeholder: bisa ditambah AI minimax
+  }
+  return null;
+}
+
+function checkWinner() {
+  const winPatterns = [
+    [0,1,2],[3,4,5],[6,7,8],
+    [0,3,6],[1,4,7],[2,5,8],
+    [0,4,8],[2,4,6]
+  ];
+  for (let pattern of winPatterns) {
+    const [a,b,c] = pattern;
+    if (board[a] && board[a]===board[b] && board[a]===board[c]) {
+      isGameOver = true;
+      document.querySelectorAll(".cell")[a].classList.add("winner");
+      document.querySelectorAll(".cell")[b].classList.add("winner");
+      document.querySelectorAll(".cell")[c].classList.add("winner");
+      statusElement.textContent = `${board[a]} MENANG! 🎉`;
+      if (board[a]==="X") player1Score++;
+      else player2Score++;
+      updateScore();
+      launchConfetti();
+      return;
+    }
+  }
+  if (!board.includes("")) {
+    isGameOver = true;
+    statusElement.textContent = "⚖️ Seri!";
+    drawScore++;
+    updateScore();
+  }
+}
+
+function updateScore() {
+  player1ScoreEl.textContent = player1Score;
+  player2ScoreEl.textContent = player2Score;
+  drawScoreEl.textContent = drawScore;
+}
+
+// === Buttons ===
+newRoundBtn.addEventListener("click", () => {
+  board = Array(9).fill("");
+  isGameOver = false;
+  currentPlayer = "X";
+  statusElement.textContent = "Giliran: X";
+  renderBoard();
+});
+
+resetBtn.addEventListener("click", () => {
+  board = Array(9).fill("");
+  isGameOver = false;
+  currentPlayer = "X";
+  player1Score = player2Score = drawScore = 0;
+  updateScore();
+  statusElement.textContent = "Game direset!";
+  renderBoard();
+});
+
+// === Tema ===
+themeSelect.addEventListener("change", () => {
+  document.body.className = themeSelect.value;
+});
+
+// === Confetti ===
+let confettiPieces = [];
+function launchConfetti() {
+  confettiPieces = Array.from({length:150},()=>({
+    x: Math.random()*confettiCanvas.width,
+    y: Math.random()*confettiCanvas.height - confettiCanvas.height,
+    r: Math.random()*6+4,
+    c: `hsl(${Math.random()*360},100%,50%)`,
+    s: Math.random()*3+2
+  }));
+  animateConfetti();
+}
+
+function animateConfetti() {
+  ctx.clearRect(0,0,confettiCanvas.width,confettiCanvas.height);
+  confettiPieces.forEach(p=>{
+    p.y += p.s;
+    if (p.y > confettiCanvas.height) p.y = -10;
+    ctx.beginPath();
+    ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+    ctx.fillStyle = p.c;
+    ctx.fill();
+  });
+  requestAnimationFrame(animateConfetti);
+}// Bot gerak
 function botMove() {
   const difficulty = difficultySelect.value;
   let move;
