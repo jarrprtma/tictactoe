@@ -1,98 +1,114 @@
+:root {
+  --bg: #f0f2f5;
+  --card: #fff;
+  --text: #222;
+  --accent: #0078ff;
+}
+
+body.dark {
+  --bg: #181818;
+  --card: #242424;
+  --text: #f5f5f5;
+  --accent: #ff9800;
+}
+
+body.neon {
+  --bg: #0f0f0f;
+  --card: #1a1a1a;
+  --text: #00ffea;
+  --accent: #ff00aa;
+}
+
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: #f0f2f5;
+  font-family: 'Segoe UI', sans-serif;
+  background: var(--bg);
+  color: var(--text);
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
   margin: 0;
-  color: #333;
+  transition: background 0.3s, color 0.3s;
 }
 
 .container {
-  text-align: center;
-  background: #fff;
+  background: var(--card);
   padding: 25px 35px;
   border-radius: 20px;
-  box-shadow: 0 6px 25px rgba(0,0,0,0.1);
-  width: 340px;
+  box-shadow: 0 6px 25px rgba(0,0,0,0.15);
+  text-align: center;
+  width: 360px;
+  transition: background 0.3s;
 }
 
-h1 {
-  margin-bottom: 15px;
+.title {
+  margin-bottom: 20px;
   font-size: 1.8rem;
-  color: #222;
+  color: var(--accent);
 }
 
 .controls {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
   margin-bottom: 20px;
 }
-
-.selects {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  text-align: left;
+.controls .row {
+  margin: 8px 0;
 }
 
 select, button {
-  padding: 6px 10px;
+  padding: 8px 12px;
   border: 1px solid #ccc;
   border-radius: 8px;
-  background: #fff;
-  cursor: pointer;
   font-size: 0.9rem;
-  transition: 0.2s;
+  cursor: pointer;
+  transition: 0.3s;
 }
 
+button {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+}
 button:hover {
-  background: #f1f1f1;
+  opacity: 0.8;
 }
 
 .board {
   display: grid;
-  grid-template-columns: repeat(3, 90px);
-  grid-template-rows: repeat(3, 90px);
+  grid-template-columns: repeat(3, 100px);
   gap: 10px;
   justify-content: center;
   margin: 20px auto;
 }
 
 .cell {
+  width: 100px;
+  height: 100px;
   background: #f9f9f9;
   border-radius: 12px;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 2.2rem;
+  font-size: 2.5rem;
   font-weight: bold;
   cursor: pointer;
-  transition: background 0.25s, transform 0.15s;
+  transition: transform 0.2s, background 0.3s;
 }
+body.dark .cell { background: #333; }
+body.neon .cell { background: #111; }
 
 .cell:hover {
-  background: #ececec;
-  transform: scale(1.05);
+  transform: scale(1.1);
+  background: var(--accent);
+  color: #fff;
 }
 
 .winner {
-  background: #90ee90 !important;
-  animation: blink 0.6s infinite alternate;
+  animation: glow 1s infinite alternate;
 }
 
-@keyframes blink {
-  from { background: #90ee90; }
-  to { background: #b6f5b6; }
-}
-
-#status {
-  margin-top: 10px;
-  font-weight: 600;
-  color: #444;
-  transition: 0.3s;
+@keyframes glow {
+  from { box-shadow: 0 0 5px var(--accent); }
+  to { box-shadow: 0 0 20px var(--accent); }
 }
 
 .scoreboard {
@@ -100,4 +116,15 @@ button:hover {
   display: flex;
   justify-content: space-between;
   font-weight: bold;
+}
+
+.buttons {
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-around;
+}
+
+#status {
+  margin-top: 10px;
+  font-weight: 600;
 }
