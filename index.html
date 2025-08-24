@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TicTacToe</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Tic Tac Toe</h1>
+    
+    <div class="controls">
+      <div class="selects">
+        <label for="symbol">Pilih Simbol:</label>
+        <select id="symbol">
+          <option value="X">X</option>
+          <option value="O">O</option>
+        </select>
+
+        <label for="difficulty">Kesulitan:</label>
+        <select id="difficulty">
+          <option value="easy">Mudah</option>
+          <option value="medium">Sedang</option>
+          <option value="hard">Sulit</option>
+        </select>
+      </div>
+      <button id="reset">Reset</button>
+    </div>
+
+    <div id="board" class="board"></div>
+
+    <p id="status">Pilih simbol & mulai permainan!</p>
+
+    <div class="scoreboard">
+      <div>👤 Kamu: <span id="playerScore">0</span></div>
+      <div>🤖 Bot: <span id="botScore">0</span></div>
+      <div>⚖️ Seri: <span id="drawScore">0</span></div>
+    </div>
+  </div>
+  
+  <script src="script.js"></script>
+</body>
+</html>
